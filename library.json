@@ -1,0 +1,15 @@
+
+{
+  "name": "ESP32 PWM",
+  "version": "0.0.1",
+  "keywords": [
+    "gyroscope","accelerometer", "magnetometer", "MPU-9250"
+  ],
+  "description": "Wrapper package of MPU9250 RAW and DMP reading via I2C",
+  "repository":  {
+      "type": "git",
+      "url": "https://github.com/gr82morozr/MPU9250.git"
+  },
+  "frameworks": "arduino",
+  "platforms": "*"
+}
