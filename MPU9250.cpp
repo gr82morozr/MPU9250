@@ -162,23 +162,19 @@ float MPU9250::get_gyro_sensitivity(void) {
   return 0;
 }
   
-unsigned short MPU9250::get_accel_sensitivity(void)
-{
+unsigned short MPU9250::get_accel_sensitivity(void) {
   unsigned short sens;
-  if (mpu_get_accel_sens(&sens) == INT_SUCCESS)
-  {
+  if (mpu_get_accel_sens(&sens) == INT_SUCCESS)   {
     return sens;
   }
   return 0;
 }
 
-float MPU9250::get_mag_sensitivity(void)
-{
+float MPU9250::get_mag_sensitivity(void) {
   return 0.15; // Static, 4915/32760
 }
 
-unsigned char MPU9250::get_fifo_config(void)
-{
+unsigned char MPU9250::get_fifo_config(void) {
   unsigned char sensors;
   if (mpu_get_fifo_config(&sensors) == INT_SUCCESS)   {
     return sensors;
@@ -260,8 +256,7 @@ int_return_t MPU9250::update(unsigned char sensors) {
   return aErr | gErr | mErr | tErr;
 }
 
-int MPU9250::update_accel(void)
-{
+int MPU9250::update_accel(void) {
   short data[3];
   
   if (mpu_get_accel_reg(data, &time))   {
