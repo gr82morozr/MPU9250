@@ -1,6 +1,6 @@
 
 {
-  "name": "ESP32 PWM",
+  "name": "MPU9250",
   "version": "0.0.1",
   "keywords": [
     "gyroscope","accelerometer", "magnetometer", "MPU-9250"
