@@ -32,7 +32,7 @@ int_return_t MPU9250::begin() {
 int_return_t MPU9250::begin(int sda_pin, int scl_pin) {
   int_return_t result;
   struct int_param_s int_param;
-  Wire.begin(sda_pin, scl_pin, MPU9250_I2C_SPEED );
+  Wire.begin(sda_pin, scl_pin );
   result = mpu_init(&int_param);
   
   if (result)
