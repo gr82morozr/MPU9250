@@ -25,18 +25,17 @@ MPU9250::MPU9250() {
 
 
 int_return_t MPU9250::begin() {
-  return this->begin(21,22);
+  return this->begin(ESP32_DEFAULT_SCA_PIN,ESP32_DEFAULT_SCL_PIN);
 }
 
 
 int_return_t MPU9250::begin(int sda_pin, int scl_pin) {
   int_return_t result;
   struct int_param_s int_param;
-  Wire.begin(sda_pin, scl_pin );
+  Wire.begin( (int) sda_pin, (int) scl_pin, (uint32_t) MPU9250_I2C_SPEED);
   result = mpu_init(&int_param);
   
-  if (result)
-    return result;
+
   
   mpu_set_bypass(1); // Place all slaves (including compass) on primary bus
   set_sensors(INV_XYZ_GYRO | INV_XYZ_ACCEL | INV_XYZ_COMPASS);
@@ -44,7 +43,15 @@ int_return_t MPU9250::begin(int sda_pin, int scl_pin) {
   _gyro_sensitivity   = get_gyro_sensitivity();
   _accel_sensitivity  = get_accel_sensitivity();
   
-  return result;
+  while (result != INT_SUCCESS)  {
+    Serial.println("Unable to communicate with MPU-9250, check connection ...");
+    Serial.println();
+    delay(5000);
+    result = mpu_init(&int_param);
+  };
+  
+
+  return 0; 
 }
 
 int_return_t MPU9250::enable_interrupt(unsigned char enable) {
@@ -637,6 +644,50 @@ int_return_t MPU9250::cal_sensors() {
 
 
 int_return_t MPU9250::cal_mag() {
-
   return 1;
 };
+
+
+
+int_return_t MPU9250::config(int config_id) {
+  if (config_id !=1) return 1;
+
+  switch (config_id) {
+    case 1 :
+      this->begin_dmp(DMP_FEATURE_6X_LP_QUAT | DMP_FEATURE_GYRO_CAL,  60); // Set DMP FIFO rate to 40 Hz
+      this->set_sensors(INV_XYZ_GYRO | INV_XYZ_ACCEL | INV_XYZ_COMPASS);
+      this->set_gyro_scale(2000); // Set gyro to 2000 dps
+      this->set_accel_scale(4); // Set accel to +/-2g
+      this->setLPF(5); // Set LPF corner frequency to 5Hz
+      this->set_sample_rate(60); // Set sample rate to 10Hz
+      this->set_mag_sample_rate(10); // Set mag rate to 10Hz
+      break;
+    default:
+      break;
+  };
+
+  return 0;
+}
+
+
+int_return_t MPU9250::refresh_reading() {
+  if ( this->is_data_ready() )   {
+    // Call update() to update the imu objects sensor data.
+    // You can specify which sensors to update by combining
+    // UPDATE_ACCEL, UPDATE_GYRO, UPDATE_COMPASS, and/or
+    // UPDATE_TEMPERATURE.
+    // (The update function defaults to accel, gyro, compass,
+    //  so you don't have to specify these values.)
+    this->update(UPDATE_ACCEL | UPDATE_GYRO | UPDATE_COMPASS);
+    // Check for new data in the FIFO
+    if ( this->get_fifo_available() )   {
+      // Use update_dmp_fifo to update the ax, gx, mx, etc. values
+      if ( this->update_dmp_fifo() == INT_SUCCESS)   {
+        // calc_euler_angles can be used -- after updating the
+        // quaternion values -- to estimate roll, pitch, and yaw
+        this->calc_euler_angles();
+      }
+    }
+  }
+  return 0;
+}

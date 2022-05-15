@@ -1,10 +1,11 @@
-/******************************************************************************
-MPU9250.h - MPU-9250 Digital Motion Processor Arduino Library 
-- This is wrapper package of SparkFun_MPU9250_Arduino_Library
-- Modified for ESP32 (tested on )
+//******************************************************************************
+//    MPU9250.h - MPU-9250 Digital Motion Processor Arduino Library 
+//      - This is wrapper package of SparkFun_MPU9250_Arduino_Library
+//      - Modified for ESP32 
+//
+//******************************************************************************
 
-******************************************************************************/
-
+#pragma once 
 #ifndef _GT_MPU9250_H_
 #define _GT_MPU9250_H_
 
@@ -25,28 +26,36 @@ extern "C" {
 
 class MPU9250 {
   public:
-    int   ax, ay, az;   // raw data read from register
-    int   gx, gy, gz;   // raw data read from register
-    int   mx, my, mz;   // raw data read from register
-    long  qw, qx, qy, qz;
-    long  temperature;
+    int   ax, ay, az;       // raw data read from register
+    int   gx, gy, gz;       // raw data read from register
+    int   mx, my, mz;       // raw data read from register
+    long  qw, qx, qy, qz;   // quaternion data
+    long  temperature;      // temperature data
 
     unsigned long time;
     float pitch, roll, yaw;
     float heading;
     
-    float aX, aY, aZ;   // real data calculated with scale factor from raw data
-    float gX, gY, gZ;   // real data calculated with scale factor from raw data
-    float mX, mY, mZ;   // real data calculated with scale factor from raw data
+    float aX, aY, aZ;       // real data calculated with scale factor from raw data
+    float gX, gY, gZ;       // real data calculated with scale factor from raw data
+    float mX, mY, mZ;       // real data calculated with scale factor from raw data
 
-    float aX_offset, aY_offset, aZ_offset ; // accelerometer offset values
-    float gX_offset, gY_offset, gZ_offset ; // gyroscope offset values
-    float mX_offset, mY_offset, mZ_offset ; // magnetometer offset values
+    float aX_offset, aY_offset, aZ_offset ;     // accelerometer offset values
+    float gX_offset, gY_offset, gZ_offset ;     // gyroscope offset values
+    float mX_offset, mY_offset, mZ_offset ;     // magnetometer offset values
     
     
-
+    // constyruction
     MPU9250();
     
+
+    //**************************************************************************************
+    //*                                                                                    *
+    //*                         Main config functions of MPU9250                           *
+    //*                                                                                    *
+    //**************************************************************************************
+
+
     // begin(void) -- Verifies communication with the MPU-9250 and the AK8963,
     // and initializes them to the default state:
     // All sensors enabled
@@ -56,7 +65,7 @@ class MPU9250 {
     // FIFO:        50 Hz, disabled
     // Output:      INT_SUCCESS (0) on success, otherwise error
     int_return_t begin(int sda_pin, int scl_pin);
-    int_return_t begin(); // with default sda=21,scl=22 pin of ESP32
+    int_return_t begin();     // with default sda=21,scl=22 pin of ESP32
     
     // set_sensors(unsigned char) -- Turn on or off MPU-9250 sensors. Any of the 
     // following defines can be combined: INV_XYZ_GYRO, INV_XYZ_ACCEL, 
@@ -403,10 +412,12 @@ class MPU9250 {
 
     // calibration of the sensors
     int_return_t cal_sensors();
-
     int_return_t cal_mag();
 
-    
+    // config function
+    int_return_t config(int config_id);
+    int_return_t refresh_reading(void);
+
   private:
     unsigned short _accel_sensitivity;
     float _gyro_sensitivity, _mag_sensitivity;

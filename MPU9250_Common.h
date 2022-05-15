@@ -10,7 +10,12 @@
 #define INT_SUCCESS               0
 #define INT_ERROR                 0x20
 
-/* no need to change unless debugging */
+// ESP32 default SCA, SCL pins 
+#define ESP32_DEFAULT_SCA_PIN     21
+#define ESP32_DEFAULT_SCL_PIN     22
+
+
+// no need to change unless debugging 
 #define MPU9250_I2C_SPEED         400000
 
 // Define's passed to update(), to request a specific sensor (or multiple):
