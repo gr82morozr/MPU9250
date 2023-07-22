@@ -27,7 +27,7 @@ Supported Platforms:
 #define MPL_LOG_ERROR		(6)
 #define MPL_LOG_SILENT		(8)
 
-typedef enum {
+typedef enum { 
     PACKET_DATA_ACCEL = 0,
     PACKET_DATA_GYRO,
     PACKET_DATA_COMPASS,

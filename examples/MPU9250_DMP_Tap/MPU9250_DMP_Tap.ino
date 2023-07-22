@@ -19,6 +19,7 @@ SparkFun 9DoF Razor IMU M0
 Supported Platforms:
 - ATSAMD21 (Arduino Zero, SparkFun SAMD21 Breakouts)
 *************************************************************/
+#include <Arduino.h>
 #include <MPU9250.h>
 
 
@@ -30,7 +31,8 @@ void setup()
   Serial.begin(115200);
 
   // Call imu.begin() to verify communication and initialize
-  if (imu.begin() != INT_SUCCESS)
+  // change the imu.begin() sda, scl pin if necessary
+  if (imu.begin() != INT_SUCCESS) 
   {
     while (1)
     {

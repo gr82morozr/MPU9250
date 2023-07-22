@@ -25,7 +25,7 @@ MPU9250::MPU9250() {
 
 
 int_return_t MPU9250::begin() {
-  return this->begin(ESP32_DEFAULT_SCA_PIN,ESP32_DEFAULT_SCL_PIN);
+  return this->begin(DEFAULT_SCA_PIN,DEFAULT_SCL_PIN);
 }
 
 
@@ -34,8 +34,6 @@ int_return_t MPU9250::begin(int sda_pin, int scl_pin) {
   struct int_param_s int_param;
   Wire.begin( (int) sda_pin, (int) scl_pin, (uint32_t) MPU9250_I2C_SPEED);
   result = mpu_init(&int_param);
-  
-
   
   mpu_set_bypass(1); // Place all slaves (including compass) on primary bus
   set_sensors(INV_XYZ_GYRO | INV_XYZ_ACCEL | INV_XYZ_COMPASS);
@@ -651,10 +649,10 @@ int_return_t MPU9250::cal_mag() {
 
 int_return_t MPU9250::config(int config_id) {
   if (config_id !=1) return 1;
-
+  
   switch (config_id) {
     case 1 :
-      this->begin_dmp(DMP_FEATURE_6X_LP_QUAT | DMP_FEATURE_GYRO_CAL,  60); // Set DMP FIFO rate to 40 Hz
+      this->begin_dmp(DMP_FEATURE_6X_LP_QUAT | DMP_FEATURE_GYRO_CAL,  60); // Set DMP FIFO rate to 60 Hz
       this->set_sensors(INV_XYZ_GYRO | INV_XYZ_ACCEL | INV_XYZ_COMPASS);
       this->set_gyro_scale(2000); // Set gyro to 2000 dps
       this->set_accel_scale(4); // Set accel to +/-2g

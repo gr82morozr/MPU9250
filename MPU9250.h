@@ -45,8 +45,9 @@ class MPU9250 {
     float mX_offset, mY_offset, mZ_offset ;     // magnetometer offset values
     
     
-    // constyruction
+    // constructor
     MPU9250();
+    
     
 
     //**************************************************************************************
@@ -255,6 +256,8 @@ class MPU9250 {
     // fifoRate can be anywhere between 4 and 200Hz.
     // Input: OR'd list of features and requested FIFO sampling rate
     // Output: INT_SUCCESS (0) on success, otherwise error
+    // example : 
+    //    this->begin_dmp(DMP_FEATURE_6X_LP_QUAT | DMP_FEATURE_GYRO_CAL,  60); // Set DMP FIFO rate to 60 Hz
     int_return_t begin_dmp(unsigned short features = 0, unsigned short fifoRate = MAX_DMP_SAMPLE_RATE);
     
  
@@ -415,7 +418,13 @@ class MPU9250 {
     int_return_t cal_mag();
 
     // config function
+    // A set of pre-defined configs of sensors.
+    // 
+    // 1 - the common one
+    // 2 - to be added
     int_return_t config(int config_id);
+    
+    // refresh reading
     int_return_t refresh_reading(void);
 
   private:
