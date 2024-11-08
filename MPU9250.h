@@ -35,14 +35,16 @@ class MPU9250 {
     unsigned long time;
     float pitch, roll, yaw;
     float heading;
-    
-    float aX, aY, aZ;       // real data calculated with scale factor from raw data
-    float gX, gY, gZ;       // real data calculated with scale factor from raw data
-    float mX, mY, mZ;       // real data calculated with scale factor from raw data
 
     float aX_offset, aY_offset, aZ_offset ;     // accelerometer offset values
     float gX_offset, gY_offset, gZ_offset ;     // gyroscope offset values
     float mX_offset, mY_offset, mZ_offset ;     // magnetometer offset values
+
+    float aX, aY, aZ;       // real data calculated with scale factor and offset
+    float gX, gY, gZ;       // real data calculated with scale factor and offset
+    float mX, mY, mZ;       // real data calculated with scale factor and offset
+
+
     
     
     // constructor
@@ -414,7 +416,6 @@ class MPU9250 {
     int run_self_test(unsigned char debug = 0);
 
     // calibration of the sensors
-    int_return_t cal_sensors();
     int_return_t cal_mag();
 
     // config function

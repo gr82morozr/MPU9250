@@ -272,6 +272,10 @@ int MPU9250::update_accel(void) {
   ax = data[X_AXIS];
   ay = data[Y_AXIS];
   az = data[Z_AXIS];
+
+  aX = calc_accel(ax) - aX_offset;
+  aY = calc_accel(ay) - aY_offset;
+  aZ = calc_accel(az) - aZ_offset;
   return INT_SUCCESS;
 }
 
@@ -284,6 +288,11 @@ int MPU9250::update_gyro(void) {
   gx = data[X_AXIS];
   gy = data[Y_AXIS];
   gz = data[Z_AXIS];
+
+  gX = calc_gyro(gx) - gX_offset;
+  gY = calc_gyro(gy) - gY_offset;
+  gZ = calc_gyro(gz) - gZ_offset;  
+  
   return INT_SUCCESS;
 }
 
@@ -609,41 +618,8 @@ static void orient_cb(unsigned char orient) {
 }
 
 
-int_return_t MPU9250::cal_sensors() {
-  long start = millis();
-  float count = 0;
-  aX_offset = 0.0; aY_offset=0.0; aZ_offset=0.0;
-  gX_offset = 0.0; gY_offset=0.0; gZ_offset=0.0;
-
-  do {
-    count ++;
-    update();
-    aX_offset += calc_accel(ax);
-    aY_offset += calc_accel(ay);
-    aZ_offset += calc_accel(az); 
-
-    gX_offset += calc_gyro(gx);
-    gY_offset += calc_gyro(gy);
-    gZ_offset += calc_gyro(gz);
-
-    delay(10);
-
-  }  while (millis() - start <= 10000);
-    
-  aX_offset = aX_offset/count; 
-  aY_offset = aY_offset/count; 
-  aZ_offset = aZ_offset/count; 
-  gX_offset = gX_offset/count; 
-  gY_offset = gY_offset/count; 
-  gZ_offset = gZ_offset/count; 
-
-  return 1;
-};
-
-
-
-
 int_return_t MPU9250::cal_mag() {
+  // to be done
   return 1;
 };
 
