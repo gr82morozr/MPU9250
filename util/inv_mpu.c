@@ -18,6 +18,8 @@
  *                  MPU9150 (or MPU6050 w/ AK8975 on the auxiliary bus)
  *                  MPU9250 (or MPU6500 w/ AK8963 on the auxiliary bus)
  */
+ 
+ 
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -518,6 +520,7 @@ const struct gyro_reg_s reg = {
     .i2c_delay_ctrl = 0x67
 #endif
 };
+
 const struct hw_s hw = {
     .addr           = 0x68,
     .max_fifo       = 1024,
@@ -576,7 +579,6 @@ static int setup_compass(void);
 int set_int_enable(unsigned char enable)
 {
     unsigned char tmp;
-
     if (st.chip_cfg.dmp_on) {
         if (enable)
             tmp = BIT_DMP_INT_EN;
@@ -1329,21 +1331,23 @@ int mpu_get_sample_rate(unsigned short *rate)
 
 /**
  *  @brief      Set sampling rate.
- *  Sampling rate must be between 4Hz and 1kHz.
+ *  Sampling rate must be between 4Hz and 1kHz. (same as FIFO rate)
  *  @param[in]  rate    Desired sampling rate (Hz).
  *  @return     0 if successful.
  */
-int mpu_set_sample_rate(unsigned short rate)
-{
-    unsigned char data;
-
+int mpu_set_sample_rate(unsigned short rate) {
+    unsigned char smprt_div;
+	
+	//If no sensors are enabled, it returns -1. This is a good initial check to ensure that the MPU9250 is configured with active sensors before setting the sample rate.
     if (!(st.chip_cfg.sensors))
         return -1;
 
+	// DMP typically controls its own internal sample rate, so setting an external sample rate could interfere with DMP operations.
     if (st.chip_cfg.dmp_on)
         return -1;
     else {
         if (st.chip_cfg.lp_accel_mode) {
+			// low-power mode generally limits the accelerometer rate to a maximum of 40 Hz.
             if (rate && (rate <= 40)) {
                 /* Just stay in low-power accel mode. */
                 mpu_lp_accel_mode(rate);
@@ -1354,16 +1358,18 @@ int mpu_set_sample_rate(unsigned short rate)
              */
             mpu_lp_accel_mode(0);
         }
-        if (rate < 4)
-            rate = 4;
-        else if (rate > 1000)
-            rate = 1000;
+		
+		// set rate 
+        if (rate < 4) 
+			rate = 4;
+        else if (rate > 1000) 
+			rate = 1000;
 
-        data = 1000 / rate - 1;
-        if (i2c_write(st.hw->addr, st.reg->rate_div, 1, &data))
+        smprt_div = 1000 / rate - 1;
+        if (i2c_write(st.hw->addr, st.reg->rate_div, 1, &smprt_div))
             return -1;
 
-        st.chip_cfg.sample_rate = 1000 / (1 + data);
+        st.chip_cfg.sample_rate = 1000 / (1 + smprt_div);
 
 #ifdef AK89xx_SECONDARY
         mpu_set_compass_sample_rate(min(st.chip_cfg.compass_sample_rate, MAX_COMPASS_SAMPLE_RATE));

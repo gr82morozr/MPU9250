@@ -25,14 +25,14 @@ MPU9250::MPU9250() {
 
 
 int_return_t MPU9250::begin() {
-  return this->begin(DEFAULT_SCA_PIN,DEFAULT_SCL_PIN);
+  return this->begin(DEFAULT_SCA_PIN,DEFAULT_SCL_PIN, MPU9250_I2C_SPEED);
 }
 
 
-int_return_t MPU9250::begin(int sda_pin, int scl_pin) {
+int_return_t MPU9250::begin(int sda_pin, int scl_pin, uint32_t i2c_speed) {
   int_return_t result;
   struct int_param_s int_param;
-  Wire.begin( (int) sda_pin, (int) scl_pin, (uint32_t) MPU9250_I2C_SPEED);
+  Wire.begin( (int) sda_pin, (int) scl_pin, (uint32_t) i2c_speed);
   result = mpu_init(&int_param);
   
   mpu_set_bypass(1); // Place all slaves (including compass) on primary bus
@@ -42,12 +42,14 @@ int_return_t MPU9250::begin(int sda_pin, int scl_pin) {
   _accel_sensitivity  = get_accel_sensitivity();
   
   while (result != INT_SUCCESS)  {
+    if (Serial.availableForWrite() == 0) {
+      Serial.begin(115200);
+    }
     Serial.println("Unable to communicate with MPU-9250, check connection ...");
-    Serial.println();
+    Serial.println();    
     delay(5000);
     result = mpu_init(&int_param);
   };
-  
 
   return 0; 
 }

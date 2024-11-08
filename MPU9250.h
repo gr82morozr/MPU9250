@@ -4,10 +4,10 @@
 //      - Modified for ESP32 
 //
 //******************************************************************************
-
+ 
 #pragma once 
-#ifndef _GT_MPU9250_H_
-#define _GT_MPU9250_H_
+#ifndef _MPU9250
+#define _MPU9250
 
 
 #include <Arduino.h>
@@ -65,8 +65,8 @@ class MPU9250 {
     // LPF:         42 Hz
     // FIFO:        50 Hz, disabled
     // Output:      INT_SUCCESS (0) on success, otherwise error
-    int_return_t begin(int sda_pin, int scl_pin);
-    int_return_t begin();     // with default sda=21,scl=22 pin of ESP32
+    int_return_t begin(int sda_pin, int scl_pin,  uint32_t i2c_speed);
+    int_return_t begin();    // with default sda=21,scl=22 pin with default i2c_speed of ESP32
     
     // set_sensors(unsigned char) -- Turn on or off MPU-9250 sensors. Any of the 
     // following defines can be combined: INV_XYZ_GYRO, INV_XYZ_ACCEL, 

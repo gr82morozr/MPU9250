@@ -58,7 +58,7 @@ void setup()
   // of the accelerometer and gyroscope.
   // Can be any of the following: 188, 98, 42, 20, 10, 5
   // (values are in Hz).
-  imu.setLPF(5); // Set LPF corner frequency to 5Hz
+  imu.setLPF(42); // Set LPF corner frequency to 5Hz
 
   // The sample rate of the accel/gyro can be set using
   // set_sample_rate. Acceptable values range from 4Hz to 1kHz

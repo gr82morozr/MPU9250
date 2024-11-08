@@ -11,8 +11,8 @@
 #define INT_ERROR                 0x20
 
 // ESP32 default SCA, SCL pins 
-#define DEFAULT_SCA_PIN     21
-#define DEFAULT_SCL_PIN     22
+#define DEFAULT_SCA_PIN           21
+#define DEFAULT_SCL_PIN           22
 
 
 // no need to change unless debugging 
