@@ -49,6 +49,10 @@
 
 #define INV_WXYZ_QUAT               (0x100)
 
+// Define a no-operation (NOP) function for ESP32
+void __no_operation() ;
+
+
 /* Set up functions. */
 int dmp_load_motion_driver_firmware(void);
 int dmp_set_fifo_rate(unsigned short rate);

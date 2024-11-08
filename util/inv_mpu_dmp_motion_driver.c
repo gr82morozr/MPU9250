@@ -39,8 +39,13 @@
 #define i2c_read(a, b, c, d)  arduino_i2c_read(a, b, c, d)
 #define delay_ms  arduino_delay_ms
 #define get_ms    arduino_get_clock_ms
-#define log_i     _MLPrintLog
-#define log_e     _MLPrintLog
+#ifndef log_i
+    #define log_i _MLPrintLog
+#endif
+
+#ifndef log_e
+    #define log_e _MLPrintLog
+#endif
 
 /* These defines are copied from dmpDefaultMPU6050.c in the general MPL
  * releases. These defines may change for each DMP image, so be sure to modify
@@ -468,6 +473,15 @@ static struct dmp_s dmp = {
     .fifo_rate = 0,
     .packet_length = 0
 };
+
+
+
+
+// Define a no-operation (NOP) function for ESP32
+void __no_operation() {
+    // Do nothing
+}
+
 
 /**
  *  @brief  Load the DMP with this image.
