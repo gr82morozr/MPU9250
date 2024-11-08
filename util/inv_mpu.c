@@ -52,8 +52,13 @@
 #define i2c_read(a, b, c, d)  arduino_i2c_read(a, b, c, d)
 #define delay_ms  arduino_delay_ms
 #define get_ms    arduino_get_clock_ms
-#define log_i     _MLPrintLog
-#define log_e     _MLPrintLog 
+#ifndef log_i
+    #define log_i _MLPrintLog
+#endif
+
+#ifndef log_e
+    #define log_e _MLPrintLog
+#endif
 static inline int reg_int_cb(struct int_param_s *int_param)
 {
 	
