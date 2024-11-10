@@ -4,6 +4,9 @@
 
 // Optimally, these defines would be passed as compiler options, but Arduino
 // doesn't give us a great way to do that.
+
+
+
 #define AK8963_SECONDARY
 #define COMPASS_ENABLED
 

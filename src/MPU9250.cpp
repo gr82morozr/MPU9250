@@ -221,13 +221,14 @@ int_return_t MPU9250::update_fifo(void) {
     ay = accel[Y_AXIS];
     az = accel[Z_AXIS];
   }
+  
   if (sensors & INV_X_GYRO) 
     gx = gyro[X_AXIS];
   if (sensors & INV_Y_GYRO)
     gy = gyro[Y_AXIS];
   if (sensors & INV_Z_GYRO)
     gz = gyro[Z_AXIS];
-  
+
   time = timestamp;
   
   return INT_SUCCESS;
@@ -273,7 +274,8 @@ int MPU9250::update_accel(void) {
   ay = data[Y_AXIS];
   az = data[Z_AXIS];
 
-  aX = calc_accel(ax) - aX_offset;
+  // apply scale and offset
+  aX = calc_accel(ax) - aX_offset; 
   aY = calc_accel(ay) - aY_offset;
   aZ = calc_accel(az) - aZ_offset;
   return INT_SUCCESS;
@@ -289,6 +291,7 @@ int MPU9250::update_gyro(void) {
   gy = data[Y_AXIS];
   gz = data[Z_AXIS];
 
+  // apply scale and offset
   gX = calc_gyro(gx) - gX_offset;
   gY = calc_gyro(gy) - gY_offset;
   gZ = calc_gyro(gz) - gZ_offset;  
@@ -517,15 +520,15 @@ int_return_t MPU9250::set_dmp_pedometer_time(unsigned long time) {
   return dmp_set_pedometer_walk_time(time);
 }
 
-float MPU9250::calc_accel(int axis) {
+float MPU9250::calc_accel(int axis) { // apply scale
   return (float) axis / (float) _accel_sensitivity;
 }
 
-float MPU9250::calc_gyro(int axis) {
+float MPU9250::calc_gyro(int axis) {  // apply scale
   return (float) axis / (float) _gyro_sensitivity;
 }
 
-float MPU9250::calc_mag(int axis) {
+float MPU9250::calc_mag(int axis) {  // apply scale
   return (float) axis / (float) _mag_sensitivity;
 }
 
